@@ -225,6 +225,55 @@ TextButton.MouseButton1Click:Connect(function()
     end
 end)
 
+	-- New GUI for Prediction Display
+local PredictionDisplay = Instance.new("Frame")
+local PredictionText = Instance.new("TextLabel")
+local UICorner_3 = Instance.new("UICorner")
+
+-- Properties for the new GUI
+PredictionDisplay.Parent = Hellbound
+PredictionDisplay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PredictionDisplay.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PredictionDisplay.BorderSizePixel = 0
+PredictionDisplay.Position = UDim2.new(0.133798108, 0, 0.37267238, 0) -- Positioned below the existing GUI
+PredictionDisplay.Size = UDim2.new(0, 202, 0, 50)
+PredictionDisplay.Active = true
+PredictionDisplay.Draggable = true
+
+UICorner_3.Parent = PredictionDisplay
+
+PredictionText.Parent = PredictionDisplay
+PredictionText.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+PredictionText.BackgroundTransparency = 1
+PredictionText.Size = UDim2.new(1, 0, 1, 0)
+PredictionText.Font = Enum.Font.SourceSansSemibold
+PredictionText.Text = "Current Prediction: N/A"
+PredictionText.TextColor3 = Color3.fromRGB(180, 180, 255)
+PredictionText.TextScaled = true
+PredictionText.TextSize = 18.000
+PredictionText.TextWrapped = true
+
+-- Function to update the prediction display
+local function updatePredictionDisplay(prediction)
+    PredictionText.Text = "Current Prediction: " .. tostring(prediction)
+end
+
+-- Function to animate the RGB colors
+local function animateRGB()
+    while true do
+        for hue = 0, 1, 0.01 do
+            local color = Color3.fromHSV(hue, 1, 1)
+            PredictionText.TextColor3 = color
+            wait(0.05)
+        end
+    end
+end
+
+-- Start the RGB animation
+spawn(animateRGB)
+
+-- Example of updating the prediction display (replace this with your actual logic)
+-- Example: updatePredictionDisplay(getgenv().Prediction)
 	while wait() do
         if getgenv().AutoPrediction == true then	
         local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()	
@@ -327,7 +376,9 @@ local ping = tonumber(split[1])
         elseif ping > 50 then
             getgenv().Prediction = 0.1412
         else
-            getgenv().Prediction = 0.1433
-        end
+            getgenv().Prediction = 0.1433    
+
+        updatePredictionDisplay(getgenv().Prediction)
     end
+end
 end
