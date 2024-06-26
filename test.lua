@@ -3,8 +3,8 @@ getgenv().AimPart = "HumanoidRootPart"
 getgenv().Key = "Q"	
 getgenv().DisableKey = "P"	
 	
-getgenv().FOV = false
-getgenv().ShowFOV = false	
+getgenv().FOV = true
+getgenv().ShowFOV = true
 getgenv().FOVSize = 55	
 	
 --// Variables (Service)	
