@@ -225,34 +225,110 @@ TextButton.MouseButton1Click:Connect(function()
     end
 end)
 
-	local predictionTable = {
-    {50, 0.1433}, {55, 0.1412}, {60, 0.1389}, {65, 0.1367}, {70, 0.1346},
-    {75, 0.1324}, {80, 0.1303}, {85, 0.1282}, {90, 0.1261}, {95, 0.1240},
-    {100, 0.1219}, {105, 0.1198}, {110, 0.1177}, {115, 0.1157}, {120, 0.1136},
-    {125, 0.1116}, {130, 0.1095}, {135, 0.1075}, {140, 0.1055}, {145, 0.1035},
-    {150, 0.1015}, {155, 0.0995}, {160, 0.0975}, {165, 0.0956}, {170, 0.0936},
-    {175, 0.0917}, {180, 0.0897}, {185, 0.0878}, {190, 0.0859}, {195, 0.0840},
-    {200, 0.0821}, {205, 0.0802}, {210, 0.0783}, {215, 0.0765}, {220, 0.0746},
-    {225, 0.0728}, {230, 0.0710}, {235, 0.0692}, {240, 0.0674}, {245, 0.0656},
-    {250, 0.0638}, {255, 0.0620}, {260, 0.0603}, {265, 0.0585}, {270, 0.0568},
-    {275, 0.0551}, {280, 0.0534}, {285, 0.0517}, {290, 0.0500}
-}
-
-local function getPrediction(ping)
-    for _, data in ipairs(predictionTable) do
-        if ping <= data[1] then
-            return data[2]
-        end
-    end
-    return predictionTable[#predictionTable][2]  -- Default to the last value if ping is very high
-end
-
 while wait() do
     if getgenv().AutoPrediction == true then
         local pingValue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
         local split = string.split(pingValue, '(')
         local ping = tonumber(split[1])
-
-        getgenv().Prediction = getPrediction(ping)
+        
+        if ping <= 50 then
+            getgenv().Prediction = 0.1433
+        elseif ping <= 55 then
+            getgenv().Prediction = 0.1412
+        elseif ping <= 60 then
+            getgenv().Prediction = 0.1389
+        elseif ping <= 65 then
+            getgenv().Prediction = 0.1367
+        elseif ping <= 70 then
+            getgenv().Prediction = 0.1346
+        elseif ping <= 75 then
+            getgenv().Prediction = 0.1324
+        elseif ping <= 80 then
+            getgenv().Prediction = 0.1303
+        elseif ping <= 85 then
+            getgenv().Prediction = 0.1282
+        elseif ping <= 90 then
+            getgenv().Prediction = 0.1261
+        elseif ping <= 95 then
+            getgenv().Prediction = 0.1240
+        elseif ping <= 100 then
+            getgenv().Prediction = 0.1219
+        elseif ping <= 105 then
+            getgenv().Prediction = 0.1198
+        elseif ping <= 110 then
+            getgenv().Prediction = 0.1177
+        elseif ping <= 115 then
+            getgenv().Prediction = 0.1157
+        elseif ping <= 120 then
+            getgenv().Prediction = 0.1136
+        elseif ping <= 125 then
+            getgenv().Prediction = 0.1116
+        elseif ping <= 130 then
+            getgenv().Prediction = 0.1095
+        elseif ping <= 135 then
+            getgenv().Prediction = 0.1075
+        elseif ping <= 140 then
+            getgenv().Prediction = 0.1055
+        elseif ping <= 145 then
+            getgenv().Prediction = 0.1035
+        elseif ping <= 150 then
+            getgenv().Prediction = 0.1015
+        elseif ping <= 155 then
+            getgenv().Prediction = 0.0995
+        elseif ping <= 160 then
+            getgenv().Prediction = 0.0975
+        elseif ping <= 165 then
+            getgenv().Prediction = 0.0956
+        elseif ping <= 170 then
+            getgenv().Prediction = 0.0936
+        elseif ping <= 175 then
+            getgenv().Prediction = 0.0917
+        elseif ping <= 180 then
+            getgenv().Prediction = 0.0897
+        elseif ping <= 185 then
+            getgenv().Prediction = 0.0878
+        elseif ping <= 190 then
+            getgenv().Prediction = 0.0859
+        elseif ping <= 195 then
+            getgenv().Prediction = 0.0840
+        elseif ping <= 200 then
+            getgenv().Prediction = 0.0821
+        elseif ping <= 205 then
+            getgenv().Prediction = 0.0802
+        elseif ping <= 210 then
+            getgenv().Prediction = 0.0783
+        elseif ping <= 215 then
+            getgenv().Prediction = 0.0765
+        elseif ping <= 220 then
+            getgenv().Prediction = 0.0746
+        elseif ping <= 225 then
+            getgenv().Prediction = 0.0728
+        elseif ping <= 230 then
+            getgenv().Prediction = 0.0710
+        elseif ping <= 235 then
+            getgenv().Prediction = 0.0692
+        elseif ping <= 240 then
+            getgenv().Prediction = 0.0674
+        elseif ping <= 245 then
+            getgenv().Prediction = 0.0656
+        elseif ping <= 250 then
+            getgenv().Prediction = 0.0638
+        elseif ping <= 255 then
+            getgenv().Prediction = 0.0620
+        elseif ping <= 260 then
+            getgenv().Prediction = 0.0603
+        elseif ping <= 265 then
+            getgenv().Prediction = 0.0585
+        elseif ping <= 270 then
+            getgenv().Prediction = 0.0568
+        elseif ping <= 275 then
+            getgenv().Prediction = 0.0551
+        elseif ping <= 280 then
+            getgenv().Prediction = 0.0534
+        elseif ping <= 285 then
+            getgenv().Prediction = 0.0517
+        elseif ping <= 290 then
+            getgenv().Prediction = 0.0500
+        end
     end
 end
