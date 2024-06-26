@@ -3,7 +3,7 @@ getgenv().AimPart = "HumanoidRootPart"
 getgenv().Key = "Q"	
 getgenv().DisableKey = "P"	
 	
-getgenv().FOV = true	
+getgenv().FOV = false
 getgenv().ShowFOV = false	
 getgenv().FOVSize = 55	
 	
@@ -80,69 +80,40 @@ function WTSP(arg)
 end	
 	
 function FindNearestEnemy()
-    local ClosestDistance, ClosestPlayer = math.huge, nil
-    local CenterPosition =
-        Vector2.new(
-        game:GetService("GuiService"):GetScreenResolution().X / 2,
-        game:GetService("GuiService"):GetScreenResolution().Y / 2
-    )
-
-    for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
-        if Player ~= LocalPlayer then
-            local Character = Player.Character
-            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-                local Position, IsVisibleOnViewport =
-                    game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
-
-                if IsVisibleOnViewport then
-                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                    if Distance < ClosestDistance then
-                        ClosestPlayer = Character.HumanoidRootPart
-                        ClosestDistance = Distance
-                    end
-                end
-            end
-        end
-    end
-
-    return ClosestPlayer
-end
-enemy = FindNearestEnemy()
-local enemy = nil
-
-Mouse.KeyDown:Connect(function(k)	
-    SelectedKey = SelectedKey:lower()	
-    SelectedDisableKey = SelectedDisableKey:lower()	
-    if k == SelectedKey then	
-        if AimlockState == true then	
-            Locked = not Locked	
-            if Locked then	
-                enemy = FindNearestEnemy()	
+function getClosest()	
+    local closestPlayer	
+    local shortestDistance = math.huge	
 	
-                Notify("Locked onto: "..tostring(enemy.Character.Humanoid.DisplayName))	
+    for i, v in pairs(game.Players:GetPlayers()) do	
+        local notKO = v.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true	
+        local notGrabbed = v.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil	
+        	
+if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then	
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)	
+local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude	
+            	
+            if (getgenv().FOV) then	
+                if (fov.Radius > magnitude and magnitude < shortestDistance) then	
+                    closestPlayer = v	
+                    shortestDistance = magnitude	
+                end	
             else	
-                if enemy ~= nil then	
-                    enemy = nil	
-	
-                    Notify("Unlocked!")	
+                if (magnitude < shortestDistance) then	
+                    closestPlayer = v	
+                    shortestDistance = magnitude	
                 end	
             end	
-        else	
-            Notify("Aimlock is not enabled!")	
         end	
     end	
-    if k == SelectedDisableKey then	
-        AimlockState = not AimlockState	
-    end	
-end)	
-	
+    return closestPlayer	
+end	
 --// Loop update FOV and loop camera lock onto target	
 	
 RS.RenderStepped:Connect(function()	
     update()	
     if AimlockState == true then	
-        if enemy ~= nil then	
-            Camera.CFrame = CFrame.new(Camera.CFrame.p, enemy.Character[getgenv().AimPart].Position + enemy.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
+        if Victim~= nil then	
+            Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + Victim.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
         end	
     end	
 end)	
@@ -209,10 +180,10 @@ TextButton.MouseButton1Click:Connect(
         if not state then
             TextButton.Text = "Hellbound ON"
             AimlockState = true
-            enemy = FindNearestEnemy()
+            Victim = FindNearestEnemy()
         else
             TextButton.Text = "Hellbound OFF"
-            enemy = nil
+            Victim = nil
             AimlockState = false
         end
     end
