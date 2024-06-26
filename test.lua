@@ -10,7 +10,7 @@ getgenv().FOVSize = 55
 	
 --// Variables (Service)	
 	
-local Players = game:GetService("Players")	
+local Player = game:GetService("Players")	
 local RS = game:GetService("RunService")	
 local WS = game:GetService("Workspace")	
 local GS = game:GetService("GuiService")	
