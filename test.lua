@@ -108,11 +108,11 @@ TextButton.MouseButton1Click:Connect(function()
     state = not state
     if state then
         TextButton.Text = "T LOCK"
-        CamlockState = false
+        AimlockState = false
         enemy = nil 
     else
         TextButton.Text = "T UNLOCK"
-        CamlockState = true
+        AimlockState = true
         enemy = FindNearestEnemy()
     end
 end)
