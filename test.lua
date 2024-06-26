@@ -78,8 +78,7 @@ end
 function WTSP(arg)	
     return Camera.WorldToScreenPoint(Camera, arg)	
 end	
-	
-function FindNearestEnemy()
+
 function getClosest()	
     local closestPlayer	
     local shortestDistance = math.huge	
@@ -180,7 +179,7 @@ TextButton.MouseButton1Click:Connect(
         if not state then
             TextButton.Text = "Hellbound ON"
             AimlockState = true
-            Victim = FindNearestEnemy()
+            Victim = getClosest()
         else
             TextButton.Text = "Hellbound OFF"
             Victim = nil
