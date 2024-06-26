@@ -274,111 +274,54 @@ spawn(animateRGB)
 
 -- Example of updating the prediction display (replace this with your actual logic)
 -- Example: updatePredictionDisplay(getgenv().Prediction)
-	while wait() do
+while wait() do
         if getgenv().AutoPrediction == true then	
         local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()	
         local split = string.split(pingvalue,'(')	
 local ping = tonumber(split[1])	
-        if ping > 285 then
-            getgenv().Prediction = 0.0500
-        elseif ping > 280 then
-            getgenv().Prediction = 0.0517
-        elseif ping > 275 then
-            getgenv().Prediction = 0.0534
-        elseif ping > 270 then
-            getgenv().Prediction = 0.0551
-        elseif ping > 265 then
-            getgenv().Prediction = 0.0568
-        elseif ping > 260 then
-            getgenv().Prediction = 0.0585
-        elseif ping > 255 then
-            getgenv().Prediction = 0.0603
-        elseif ping > 250 then
-            getgenv().Prediction = 0.0620
-        elseif ping > 245 then
-            getgenv().Prediction = 0.0638
-        elseif ping > 240 then
-            getgenv().Prediction = 0.0656
-        elseif ping > 235 then
-            getgenv().Prediction = 0.0674
-        elseif ping > 230 then
-            getgenv().Prediction = 0.0692
-        elseif ping > 225 then
-            getgenv().Prediction = 0.0710
-        elseif ping > 220 then
-            getgenv().Prediction = 0.0728
-        elseif ping > 215 then
-            getgenv().Prediction = 0.0746
-        elseif ping > 210 then
-            getgenv().Prediction = 0.0765
-        elseif ping > 205 then
-            getgenv().Prediction = 0.0783
-        elseif ping > 200 then
-            getgenv().Prediction = 0.0802
-        elseif ping > 195 then
-            getgenv().Prediction = 0.0821
-        elseif ping > 190 then
-            getgenv().Prediction = 0.0840
-        elseif ping > 185 then
-            getgenv().Prediction = 0.0859
-        elseif ping > 180 then
-            getgenv().Prediction = 0.0878
-        elseif ping > 175 then
-            getgenv().Prediction = 0.0897
-        elseif ping > 170 then
-            getgenv().Prediction = 0.0917
-        elseif ping > 165 then
-            getgenv().Prediction = 0.0936
-        elseif ping > 160 then
-            getgenv().Prediction = 0.0956
-        elseif ping > 155 then
-            getgenv().Prediction = 0.0975
-        elseif ping > 150 then
-            getgenv().Prediction = 0.0995
-        elseif ping > 145 then
-            getgenv().Prediction = 0.1015
-        elseif ping > 140 then
-            getgenv().Prediction = 0.1035
-        elseif ping > 135 then
-            getgenv().Prediction = 0.1055
-        elseif ping > 130 then
-            getgenv().Prediction = 0.1075
-        elseif ping > 125 then
-            getgenv().Prediction = 0.1095
-        elseif ping > 120 then
-            getgenv().Prediction = 0.1116
-        elseif ping > 115 then
-            getgenv().Prediction = 0.1136
-        elseif ping > 110 then
-            getgenv().Prediction = 0.1157
-        elseif ping > 105 then
-            getgenv().Prediction = 0.1177
-        elseif ping > 100 then
-            getgenv().Prediction = 0.1198
-        elseif ping > 95 then
-            getgenv().Prediction = 0.1219
-        elseif ping > 90 then
-            getgenv().Prediction = 0.1240
-        elseif ping > 85 then
-            getgenv().Prediction = 0.1261
-        elseif ping > 80 then
-            getgenv().Prediction = 0.1282
-        elseif ping > 75 then
-            getgenv().Prediction = 0.1303
-        elseif ping > 70 then
-            getgenv().Prediction = 0.1324
-        elseif ping > 65 then
-            getgenv().Prediction = 0.1346
-        elseif ping > 60 then
-            getgenv().Prediction = 0.1367
-        elseif ping > 55 then
-            getgenv().Prediction = 0.1389
-        elseif ping > 50 then
-            getgenv().Prediction = 0.1412
-        else
-            getgenv().Prediction = 0.1433    
-
-        updatePredictionDisplay(getgenv().Prediction)
-    end
-end
+if ping < 225 then	
+getgenv().Prediction = 1.4	
+elseif ping < 215 then	
+getgenv().Prediction = 1.2	
+	elseif ping < 205 then
+getgenv().Prediction = 1.0	
+	elseif ping < 190 then
+getgenv().Prediction = 0.10	
+elseif ping < 180 then	
+getgenv().Prediction = 0.12	
+	elseif ping < 170 then
+getgenv().Prediction = 0.15	
+	elseif ping < 160 then
+getgenv().Prediction = 0.18	
+	elseif ping < 150 then
+getgenv().Prediction = 0.110	
+elseif ping < 140 then	
+getgenv().Prediction = 0.113	
+elseif ping < 130 then	
+getgenv().Prediction = 0.116	
+elseif ping < 120 then	
+getgenv().Prediction = 0.120	
+elseif ping < 110 then	
+getgenv().Prediction = 0.124	
+elseif ping < 105 then	
+getgenv().Prediction = 0.127	
+elseif ping < 90 then	
+getgenv().Prediction = 0.130	
+elseif ping < 80 then	
+getgenv().Prediction = 0.133	
+elseif ping < 70 then	
+getgenv().Prediction = 0.136	
+elseif ping < 60 then	
+getgenv().Prediction = 0.140	
+elseif ping < 50 then	
+getgenv().Prediction = 0.143	
+elseif ping < 40 then	
+getgenv().Prediction = 0.145	
+elseif ping < 30 then	
+getgenv().Prediction = 0.155	
+elseif ping < 20 then	
+getgenv().Prediction = 0.157	
+        end	
+	updatePredictionDisplay(getgenv().Prediction)	
+        end	
 end
