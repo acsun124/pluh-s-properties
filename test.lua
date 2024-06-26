@@ -1,10 +1,38 @@
+getgenv().keytoclick = "Q"
+tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = keytoclick
+tool.Activated:connect(function()
+    local vim = game:service("VirtualInputManager")
+vim:SendKeyEvent(true, keytoclick, false, game)
+end)
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "backup#6002 .gg/productions";
+    Text = "join .gg/productions";
+
+})
+
+local player = game.Players.LocalPlayer
+
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+    tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+
 getgenv().Prediction = 0.1248710929171	
 getgenv().AimPart = "HumanoidRootPart"	
 getgenv().Key = "Q"	
 getgenv().DisableKey = "P"	
 	
-getgenv().FOV = true
-getgenv().ShowFOV = true
+getgenv().FOV = true	
+getgenv().ShowFOV = false	
 getgenv().FOVSize = 55	
 	
 --// Variables (Service)	
@@ -33,7 +61,7 @@ local SelectedDisableKey = getgenv().DisableKey
 	
 function Notify(tx)	
     SG:SetCore("SendNotification", {	
-        Title = "Pluh / Tief's CamLock",	
+        Title = "Evan's Camlock",	
         Text = tx,	
 Duration = 5	
     })	
@@ -78,7 +106,7 @@ end
 function WTSP(arg)	
     return Camera.WorldToScreenPoint(Camera, arg)	
 end	
-
+	
 function getClosest()	
     local closestPlayer	
     local shortestDistance = math.huge	
@@ -106,12 +134,41 @@ local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).ma
     end	
     return closestPlayer	
 end	
+	
+--// Checks if key is down	
+	
+Mouse.KeyDown:Connect(function(k)	
+    SelectedKey = SelectedKey:lower()	
+    SelectedDisableKey = SelectedDisableKey:lower()	
+    if k == SelectedKey then	
+        if AimlockState == true then	
+            Locked = not Locked	
+            if Locked then	
+                Victim = getClosest()	
+	
+                Notify("Locked onto: "..tostring(Victim.Character.Humanoid.DisplayName))	
+            else	
+                if Victim ~= nil then	
+                    Victim = nil	
+	
+                    Notify("Unlocked!")	
+                end	
+            end	
+        else	
+            Notify("Aimlock is not enabled!")	
+        end	
+    end	
+    if k == SelectedDisableKey then	
+        AimlockState = not AimlockState	
+    end	
+end)	
+	
 --// Loop update FOV and loop camera lock onto target	
 	
 RS.RenderStepped:Connect(function()	
     update()	
     if AimlockState == true then	
-        if Victim~= nil then	
+        if Victim ~= nil then	
             Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + Victim.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
         end	
     end	
@@ -178,12 +235,12 @@ TextButton.MouseButton1Click:Connect(
         state = not state
         if not state then
             TextButton.Text = "Hellbound ON"
-            AimlockState = true
-            Victim = getClosest()
+            CamlockState = true
+            Victim = getClosest()	
         else
             TextButton.Text = "Hellbound OFF"
+            CamlockState = false
             Victim = nil
-            AimlockState = false
         end
     end
 )
