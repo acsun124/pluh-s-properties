@@ -110,6 +110,32 @@ function FindNearestEnemy()
 end
 
 local enemy = nil
+
+Mouse.KeyDown:Connect(function(k)	
+    SelectedKey = SelectedKey:lower()	
+    SelectedDisableKey = SelectedDisableKey:lower()	
+    if k == SelectedKey then	
+        if AimlockState == true then	
+            Locked = not Locked	
+            if Locked then	
+                enemy = FindNearestEnemy()	
+	
+                Notify("Locked onto: "..tostring(enemy.Character.Humanoid.DisplayName))	
+            else	
+                if enemy ~= nil then	
+                    enemy = nil	
+	
+                    Notify("Unlocked!")	
+                end	
+            end	
+        else	
+            Notify("Aimlock is not enabled!")	
+        end	
+    end	
+    if k == SelectedDisableKey then	
+        AimlockState = not AimlockState	
+    end	
+end)	
 	
 --// Loop update FOV and loop camera lock onto target	
 	
