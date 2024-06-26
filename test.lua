@@ -1,29 +1,75 @@
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
-local Mouse = game.Players.LocalPlayer:GetMouse()
-local AimlockState = false
-getgenv().Prediction= 0.1768521
-local HorizontalPrediction = 0.111076110
-local VerticalPrediction = 0.11034856
-local XPrediction = 20
-local YPrediction = 20
-
+getgenv().Prediction = 0.1248710929171	
+getgenv().AimPart = "HumanoidRootPart"	
+getgenv().Key = "Q"	
+getgenv().DisableKey = "P"	
+	
+getgenv().FOV = false
+getgenv().ShowFOV = false	
+getgenv().FOVSize = 55	
+	
+--// Variables (Service)	
+local Players = game:GetService("Players")	
 local RS = game:GetService("RunService")	
 local WS = game:GetService("Workspace")	
 local GS = game:GetService("GuiService")	
 local SG = game:GetService("StarterGui")	
-
-local Camera = WS.CurrentCamera	
-local GetGuiInset = GS.GetGuiInset
-
-local Players = game:GetService("Players")	
+	
+--// Variables (regular)	
+	
 local LP = Players.LocalPlayer	
 local Mouse = LP:GetMouse()	
-
-local Locked = true
-getgenv().Key = "q"
-
+local Camera = WS.CurrentCamera	
+local GetGuiInset = GS.GetGuiInset	
+	
+local AimlockState = true	
+local Locked	
+local Victim	
+	
+local SelectedKey = getgenv().Key	
+local SelectedDisableKey = getgenv().DisableKey	
+	
+--// Notification function	
+	
+function Notify(tx)	
+    SG:SetCore("SendNotification", {	
+        Title = "Pluh Camlock,	
+        Text = tx,	
+Duration = 5	
+    })	
+end	
+	
+--// Check if aimlock is loaded	
+	
+if getgenv().Loaded == true then	
+    Notify("Aimlock is already loaded!")	
+    return	
+end	
+	
+getgenv().Loaded = true	
+	
+--// FOV Circle	
+	
+local fov = Drawing.new("Circle")	
+fov.Filled = false	
+fov.Transparency = 1	
+fov.Thickness = 1	
+fov.Color = Color3.fromRGB(255, 255, 0)	
+fov.NumSides = 1000	
+	
+--// Functions	
+	
+function update()	
+    if getgenv().FOV == true then	
+        if fov then	
+fov.Radius = getgenv().FOVSize * 2	
+            fov.Visible = getgenv().ShowFOV	
+fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)	
+	
+            return fov	
+        end	
+    end	
+end	
+	
 function WTVP(arg)	
     return Camera:WorldToViewportPoint(arg)	
 end	
@@ -31,27 +77,23 @@ end
 function WTSP(arg)	
     return Camera.WorldToScreenPoint(Camera, arg)	
 end	
+	
+function getClosest()
+    local ClosestDistance = math.huge
+    local ClosestPlayer = nil
+    local LocalPlayer = game.Players.LocalPlayer
+    local CenterPosition = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
 
-
-function FindNearestEnemy()
-    local ClosestDistance, ClosestPlayer = math.huge, nil
-    local CenterPosition =
-        Vector2.new(
-        game:GetService("GuiService"):GetScreenResolution().X / 2,
-        game:GetService("GuiService"):GetScreenResolution().Y / 2
-    )
-
-    for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+    for _, Player in ipairs(game.Players:GetPlayers()) do
         if Player ~= LocalPlayer then
             local Character = Player.Character
-            if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
-                local Position, IsVisibleOnViewport =
-                    game:GetService("Workspace").CurrentCamera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+            if Character and Character:FindFirstChild("HumanoidRootPart") and Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+                local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
 
                 if IsVisibleOnViewport then
                     local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
                     if Distance < ClosestDistance then
-                        ClosestPlayer = Character.HumanoidRootPart
+                        ClosestPlayer = Character
                         ClosestDistance = Distance
                     end
                 end
@@ -61,83 +103,49 @@ function FindNearestEnemy()
 
     return ClosestPlayer
 end
-
-local enemy = nil
--- Function to aim the camera at the nearest enemy's HumanoidRootPart
-RS.RenderStepped:Connect(function()	
-    update()	
-    if AimlockState == true then	
-        if enemy ~= nil then	
-            Camera.CFrame = CFrame.new(Camera.CFrame.p, enemy.Character[getgenv().AimPart].Position + enemy.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
-        end	
-    end	
-end)	
-	while wait() do
-        if getgenv().AutoPrediction == true then	
-        local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()	
-        local split = string.split(pingvalue,'(')	
-local ping = tonumber(split[1])	
-if ping < 225 then	
-getgenv().Prediction = 1.4	
-elseif ping < 215 then	
-getgenv().Prediction = 1.2	
-	elseif ping < 205 then
-getgenv().Prediction = 1.0	
-	elseif ping < 190 then
-getgenv().Prediction = 0.10	
-elseif ping < 180 then	
-getgenv().Prediction = 0.12	
-	elseif ping < 170 then
-getgenv().Prediction = 0.15	
-	elseif ping < 160 then
-getgenv().Prediction = 0.18	
-	elseif ping < 150 then
-getgenv().Prediction = 0.110	
-elseif ping < 140 then	
-getgenv().Prediction = 0.113	
-elseif ping < 130 then	
-getgenv().Prediction = 0.116	
-elseif ping < 120 then	
-getgenv().Prediction = 0.120	
-elseif ping < 110 then	
-getgenv().Prediction = 0.124	
-elseif ping < 105 then	
-getgenv().Prediction = 0.127	
-elseif ping < 90 then	
-getgenv().Prediction = 0.130	
-elseif ping < 80 then	
-getgenv().Prediction = 0.133	
-elseif ping < 70 then	
-getgenv().Prediction = 0.136	
-elseif ping < 60 then	
-getgenv().Prediction = 0.140	
-elseif ping < 50 then	
-getgenv().Prediction = 0.143	
-elseif ping < 40 then	
-getgenv().Prediction = 0.145	
-elseif ping < 30 then	
-getgenv().Prediction = 0.155	
-elseif ping < 20 then	
-getgenv().Prediction = 0.157	
-        end	
-        end	
-	end
-
-
+	
+--// Checks if key is down	
+	
 Mouse.KeyDown:Connect(function(k)	
-    if k == getgenv().Key then	
+    SelectedKey = SelectedKey:lower()	
+    SelectedDisableKey = SelectedDisableKey:lower()	
+    if k == SelectedKey then	
+        if AimlockState == true then	
             Locked = not Locked	
             if Locked then	
-                enemy = FindNearestEnemy()
-                AimlockState = true
-             else	
-                if enemy ~= nil then	
-                    enemy = nil	
-                    AimlockState = false
+                Victim = getClosest()	
+	
+                Notify("!Abusing: "..tostring(Victim.Character.Humanoid.DisplayName))	
+            else	
+                if Victim ~= nil then	
+                    Victim = nil	
+	
+                    Notify("!Spared")	
                 end	
             end	
+        else	
+            Notify("Aimlock is not enabled!")	
+        end	
     end	
- end)
+    if k == SelectedDisableKey then	
+        AimlockState = not AimlockState	
+    end	
+end)	
+	
+--// Loop update FOV and loop camera lock onto target	
+	
+RS.RenderStepped:Connect(function()
+    update()
+    if AimlockState and Victim then
+        local aimPart = Victim:FindFirstChild(getgenv().AimPart)
+        if aimPart then
+            Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Prediction)
+        else
+            Victim = nil
+            Notify("Lost target!")
+        end
+    end
+end)
 
 local Hellbound = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -146,8 +154,7 @@ local Logo = Instance.new("ImageLabel")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 
---Properties:
-
+-- Properties
 Hellbound.Name = "Hellbound"
 Hellbound.Parent = game.CoreGui
 Hellbound.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -162,7 +169,7 @@ Frame.Active = true
 Frame.Draggable = true
 
 local function TopContainer()
-	Frame.Position = UDim2.new(0.5, -Frame.AbsoluteSize.X / 2, 0, -Frame.AbsoluteSize.Y / 2)
+    Frame.Position = UDim2.new(0.5, -Frame.AbsoluteSize.X / 2, 0, -Frame.AbsoluteSize.Y / 2)
 end
 
 TopContainer()
@@ -194,22 +201,58 @@ TextButton.TextColor3 = Color3.fromRGB(180, 180, 255)
 TextButton.TextScaled = true
 TextButton.TextSize = 18.000
 TextButton.TextWrapped = true
+
 local state = true
-TextButton.MouseButton1Click:Connect(
-    function()
-        state = not state
-        if not state then
-            TextButton.Text = "Hellbound ON"
-            AimlockState = true
-            enemy = FindNearestEnemy()
+TextButton.MouseButton1Click:Connect(function()
+    state = not state
+    if state then
+        TextButton.Text = "Pluh ON"
+        AimlockState = true
+        Victim = getClosest()
+        
+        if Victim then
+            Notify("!Abusing: " .. tostring(Victim.Humanoid.DisplayName))
         else
-            TextButton.Text = "Hellbound OFF"
-            AimlockState = false
-            enemy = nil
+            Notify("who you aiming at cunt")
+        end
+    else
+        TextButton.Text = "Pluh OFF"
+        AimlockState = false
+        if Victim then
+            Victim = nil
+            Notify("!Spared his life")
         end
     end
-)
--- Function to hide the loading screen after a certain duration
-local function HideLoadingScreen()
-    LoadingScreen:Destroy()
+end)
+
+	local predictionTable = {
+    {50, 0.1433}, {55, 0.1412}, {60, 0.1389}, {65, 0.1367}, {70, 0.1346},
+    {75, 0.1324}, {80, 0.1303}, {85, 0.1282}, {90, 0.1261}, {95, 0.1240},
+    {100, 0.1219}, {105, 0.1198}, {110, 0.1177}, {115, 0.1157}, {120, 0.1136},
+    {125, 0.1116}, {130, 0.1095}, {135, 0.1075}, {140, 0.1055}, {145, 0.1035},
+    {150, 0.1015}, {155, 0.0995}, {160, 0.0975}, {165, 0.0956}, {170, 0.0936},
+    {175, 0.0917}, {180, 0.0897}, {185, 0.0878}, {190, 0.0859}, {195, 0.0840},
+    {200, 0.0821}, {205, 0.0802}, {210, 0.0783}, {215, 0.0765}, {220, 0.0746},
+    {225, 0.0728}, {230, 0.0710}, {235, 0.0692}, {240, 0.0674}, {245, 0.0656},
+    {250, 0.0638}, {255, 0.0620}, {260, 0.0603}, {265, 0.0585}, {270, 0.0568},
+    {275, 0.0551}, {280, 0.0534}, {285, 0.0517}, {290, 0.0500}
+}
+
+local function getPrediction(ping)
+    for _, data in ipairs(predictionTable) do
+        if ping <= data[1] then
+            return data[2]
+        end
+    end
+    return predictionTable[#predictionTable][2]  -- Default to the last value if ping is very high
+end
+
+while wait() do
+    if getgenv().AutoPrediction == true then
+        local pingValue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+        local split = string.split(pingValue, '(')
+        local ping = tonumber(split[1])
+
+        getgenv().Prediction = getPrediction(ping)
+    end
 end
