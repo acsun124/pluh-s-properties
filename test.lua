@@ -116,8 +116,8 @@ local enemy = nil
 RS.RenderStepped:Connect(function()	
     update()	
     if AimlockState == true then	
-        if Victim ~= nil then	
-            Camera.CFrame = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + Victim.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
+        if enemy ~= nil then	
+            Camera.CFrame = CFrame.new(Camera.CFrame.p, enemy.Character[getgenv().AimPart].Position + enemy.Character[getgenv().AimPart].Velocity*getgenv().Prediction)	
         end	
     end	
 end)	
