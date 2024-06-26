@@ -1,4 +1,3 @@
-
 getgenv().Prediction = 0.1248710929171	
 getgenv().AimPart = "HumanoidRootPart"	
 getgenv().Key = "Q"	
@@ -108,7 +107,7 @@ function FindNearestEnemy()
 
     return ClosestPlayer
 end
-
+enemy = FindNearestEnemy()
 local enemy = nil
 
 Mouse.KeyDown:Connect(function(k)	
@@ -211,7 +210,6 @@ TextButton.MouseButton1Click:Connect(
             TextButton.Text = "Hellbound ON"
             AimlockState = true
             enemy = FindNearestEnemy()
-            
         else
             TextButton.Text = "Hellbound OFF"
             enemy = nil
