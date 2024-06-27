@@ -6,7 +6,7 @@ local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local PingDisplay = Instance.new("TextLabel")
 local PredictionDisplay = Instance.new("TextLabel")
-local ResolverButton = Instance.new("TextButton") -- New button
+local ResolverLabel = Instance.new("TextLabel") -- New label
 
 -- Properties
 Pluh.Name = "Pluh"
@@ -111,27 +111,27 @@ PredictionDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
 PredictionDisplay.TextSize = 14.000
 PredictionDisplay.TextWrapped = true
 
--- Adding Resolver Button
-ResolverButton.Parent = Frame
-ResolverButton.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Same color as frame
-ResolverButton.BackgroundTransparency = 0.30 -- Same opacity as frame
-ResolverButton.BorderSizePixel = 0
-ResolverButton.Position = UDim2.new(0.03, 0, 1, 0) -- Adjust position below the frame
-ResolverButton.Size = UDim2.new(0, 90, 0, 44)
-ResolverButton.Font = Enum.Font.SourceSansSemibold
-ResolverButton.Text = "Enable Resolver"
-ResolverButton.TextColor3 = Color3.fromRGB(0, 0, 0)
-ResolverButton.TextScaled = true
-ResolverButton.TextSize = 5.000
-ResolverButton.TextWrapped = true
+-- Adding Resolver Label
+ResolverLabel.Parent = Frame
+ResolverLabel.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Same color as frame
+ResolverLabel.BackgroundTransparency = 0.30 -- Same opacity as frame
+ResolverLabel.BorderSizePixel = 0
+ResolverLabel.Position = UDim2.new(0.03, 0, 0.514285714, 0) -- Adjust position below the frame
+ResolverLabel.Size = UDim2.new(0, 190, 0, 44)
+ResolverLabel.Font = Enum.Font.SourceSansSemibold
+ResolverLabel.Text = "Enable Resolver"
+ResolverLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+ResolverLabel.TextScaled = true
+ResolverLabel.TextSize = 18.000
+ResolverLabel.TextWrapped = true
 
-UICorner_2:Clone().Parent = ResolverButton
+UICorner_2:Clone().Parent = ResolverLabel
 
 local resolverEnabled = false
-ResolverButton.MouseButton1Click:Connect(function()
-    if not resolverEnabled then
+ResolverLabel.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and not resolverEnabled then
         resolverEnabled = true
-        ResolverButton.Text = "Resolver Enabled!"
+        ResolverLabel.Text = "Resolver Enabled!"
         
         -- Enable Resolver code
         local RunService = game:GetService("RunService")
