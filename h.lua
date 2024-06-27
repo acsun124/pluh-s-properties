@@ -1,9 +1,3 @@
--- Example content of "Protected_2873413326373898.txt"
-getgenv().AutoPrediction = true
-getgenv().Prediction = -- For Da Hood
-getgenv().Pridiction = 0.1687963 
-
---// Variables (Service)
 local Players = game:GetService("Players")
 local RS = game:GetService("RunService")
 local WS = game:GetService("Workspace")
@@ -19,6 +13,9 @@ local GetGuiInset = GS.GetGuiInset
 local AimlockState = false
 local Locked
 local Victim
+
+local SelectedKey = getgenv().Key
+local SelectedDisableKey = getgenv().DisableKey
 
 --// Notification function
 function Notify(tx)
@@ -43,6 +40,27 @@ if getgenv().Loaded == true then
 end
 
 getgenv().Loaded = true
+
+--// FOV Circle
+local fov = Drawing.new("Circle")
+fov.Filled = false
+fov.Transparency = 1
+fov.Thickness = 1
+fov.Color = Color3.fromRGB(255, 255, 0)
+fov.NumSides = 1000
+
+--// Functions
+function update()
+    if getgenv().FOV == true then
+        if fov then
+            fov.Radius = getgenv().FOVSize * 2
+            fov.Visible = getgenv().ShowFOV
+            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
+
+            return fov
+        end
+    end
+end
 
 function WTVP(arg)
     return Camera:WorldToViewportPoint(arg)
@@ -97,7 +115,7 @@ else
         if AimlockState and Victim then
             local aimPart = Victim:FindFirstChild(getgenv().AimPart)
             if aimPart then
-                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Otherpred)
+                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Pred)
             else
                 Victim = nil
                 Notify("Lost target!")
