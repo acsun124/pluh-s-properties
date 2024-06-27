@@ -17,9 +17,6 @@ local AimlockState = false
 local Locked
 local Victim
 
-local SelectedKey = getgenv().Key
-local SelectedDisableKey = getgenv().DisableKey
-
 --// Notification function
 function Notify(tx)
     SG:SetCore("SendNotification", {
@@ -43,27 +40,6 @@ if getgenv().Loaded == true then
 end
 
 getgenv().Loaded = true
-
---// FOV Circle
-local fov = Drawing.new("Circle")
-fov.Filled = false
-fov.Transparency = 1
-fov.Thickness = 1
-fov.Color = Color3.fromRGB(255, 255, 0)
-fov.NumSides = 1000
-
---// Functions
-function update()
-    if getgenv().FOV == true then
-        if fov then
-            fov.Radius = getgenv().FOVSize * 2
-            fov.Visible = getgenv().ShowFOV
-            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
-
-            return fov
-        end
-    end
-end
 
 function WTVP(arg)
     return Camera:WorldToViewportPoint(arg)
