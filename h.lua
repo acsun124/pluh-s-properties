@@ -20,7 +20,7 @@ Frame.BackgroundTransparency = 0.30 -- 25% opacity (1.0 - 0.25)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
-Frame.Size = UDim2.new(0, 202, 0, 70)
+Frame.Size = UDim2.new(0, 202, 0, 100) -- Increased height to accommodate new button
 Frame.Active = true
 Frame.Draggable = true
 
@@ -113,12 +113,12 @@ PredictionDisplay.TextSize = 14.000
 PredictionDisplay.TextWrapped = true
 
 -- Adding Enable Resolver button
-EnableResolver.Parent = Pluh -- Added below the frame
+EnableResolver.Parent = Frame -- Set parent to Frame
 EnableResolver.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 EnableResolver.BackgroundTransparency = 1.000
 EnableResolver.BorderColor3 = Color3.fromRGB(0, 0, 0)
 EnableResolver.BorderSizePixel = 0
-EnableResolver.Position = UDim2.new(0.133798108, 0, 0.30107238, 0) -- Positioned below the frame
+EnableResolver.Position = UDim2.new(0.133798108, 0, 1.2, 0) -- Positioned below the existing content
 EnableResolver.Size = UDim2.new(0, 202, 0, 30)
 EnableResolver.Font = Enum.Font.GothamBold
 EnableResolver.Text = "Enable Resolver"
