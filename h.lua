@@ -116,13 +116,13 @@ ResolverButton.Parent = Frame
 ResolverButton.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Same color as frame
 ResolverButton.BackgroundTransparency = 0.30 -- Same opacity as frame
 ResolverButton.BorderSizePixel = 0
-ResolverButton.Position = UDim2.new(0.03, 0, 0.5, 0) -- Adjust position below the frame
-ResolverButton.Size = UDim2.new(0, 190, 0, 44)
+ResolverButton.Position = UDim2.new(0.03, 0, 1, 0) -- Adjust position below the frame
+ResolverButton.Size = UDim2.new(0, 90, 0, 44)
 ResolverButton.Font = Enum.Font.SourceSansSemibold
 ResolverButton.Text = "Enable Resolver"
 ResolverButton.TextColor3 = Color3.fromRGB(0, 0, 0)
 ResolverButton.TextScaled = true
-ResolverButton.TextSize = 10.000
+ResolverButton.TextSize = 5.000
 ResolverButton.TextWrapped = true
 
 UICorner_2:Clone().Parent = ResolverButton
