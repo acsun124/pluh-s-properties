@@ -2,11 +2,12 @@
 local Pluh = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
+local Logo = Instance.new("ImageLabel")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local PingDisplay = Instance.new("TextLabel")
 local PredictionDisplay = Instance.new("TextLabel")
-local ResolverLabel = Instance.new("TextLabel") -- New label
+local EnableResolver = Instance.new("TextButton") -- New TextButton for Enable Resolver
 
 -- Properties
 Pluh.Name = "Pluh"
@@ -111,29 +112,27 @@ PredictionDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
 PredictionDisplay.TextSize = 14.000
 PredictionDisplay.TextWrapped = true
 
--- Adding Resolver Label
-ResolverLabel.Parent = Frame
-ResolverLabel.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Same color as frame
-ResolverLabel.BackgroundTransparency = 0.30 -- Same opacity as frame
-ResolverLabel.BorderSizePixel = 0
-ResolverLabel.Position = UDim2.new(0.03, 0, 0.514285714, 0) -- Adjust position below the frame
-ResolverLabel.Size = UDim2.new(0, 190, 0, 44)
-ResolverLabel.Font = Enum.Font.SourceSansSemibold
-ResolverLabel.Text = "Enable Resolver"
-ResolverLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-ResolverLabel.TextScaled = true
-ResolverLabel.TextSize = 18.000
-ResolverLabel.TextWrapped = true
-
-UICorner_2:Clone().Parent = ResolverLabel
+-- Adding Enable Resolver button
+EnableResolver.Parent = Pluh -- Added below the frame
+EnableResolver.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+EnableResolver.BackgroundTransparency = 1.000
+EnableResolver.BorderColor3 = Color3.fromRGB(0, 0, 0)
+EnableResolver.BorderSizePixel = 0
+EnableResolver.Position = UDim2.new(0.133798108, 0, 0.30107238, 0) -- Positioned below the frame
+EnableResolver.Size = UDim2.new(0, 202, 0, 30)
+EnableResolver.Font = Enum.Font.GothamBold
+EnableResolver.Text = "Enable Resolver"
+EnableResolver.TextColor3 = Color3.fromRGB(0, 0, 0) -- Text color set to black
+EnableResolver.TextScaled = true
+EnableResolver.TextSize = 14.000
+EnableResolver.TextWrapped = true
 
 local resolverEnabled = false
-ResolverLabel.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and not resolverEnabled then
+EnableResolver.MouseButton1Click:Connect(function()
+    if not resolverEnabled then
         resolverEnabled = true
-        ResolverLabel.Text = "Resolver Enabled!"
-        
-        -- Enable Resolver code
+        EnableResolver.Text = "Resolver Enabled!"
+        -- Script to be executed once the resolver is enabled
         local RunService = game:GetService("RunService")
 
         local function zeroOutYVelocity(hrp)
@@ -148,11 +147,16 @@ ResolverLabel.InputBegan:Connect(function(input)
             end)
         end
 
+        local function onPlayerRemoving(player)
+            player.CharacterAdded:Disconnect()
+        end
+
         game.Players.PlayerAdded:Connect(onPlayerAdded)
+        game.Players.PlayerRemoving:Connect(onPlayerRemoving)
 
         RunService.Heartbeat:Connect(function()
             pcall(function()
-                for _, player in pairs(game.Players:GetChildren()) do
+                for i, player in pairs(game.Players:GetChildren()) do
                     if player.Name ~= game.Players.LocalPlayer.Name then
                         local hrp = player.Character.HumanoidRootPart
                         zeroOutYVelocity(hrp)
@@ -160,7 +164,6 @@ ResolverLabel.InputBegan:Connect(function(input)
                 end
             end)
         end)
-
-        print("Resolver Enabled")
+        print("button pressed")
     end
 end)
