@@ -1,4 +1,7 @@
 -- Example content of "Protected_2873413326373898.txt"
+getgenv().AutoPrediction = true
+getgenv().Prediction = -- For Da Hood
+getgenv().Pridiction = 0.1687963 
 
 --// Variables (Service)
 local Players = game:GetService("Players")
