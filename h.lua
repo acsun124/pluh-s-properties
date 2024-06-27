@@ -94,7 +94,7 @@ else
         if AimlockState and Victim then
             local aimPart = Victim:FindFirstChild(getgenv().AimPart)
             if aimPart then
-                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Pridiction)
+                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Otherpred)
             else
                 Victim = nil
                 Notify("Lost target!")
