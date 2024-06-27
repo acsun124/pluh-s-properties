@@ -1,137 +1,12 @@
-local Players = game:GetService("Players")
-local RS = game:GetService("RunService")
-local WS = game:GetService("Workspace")
-local GS = game:GetService("GuiService")
-local SG = game:GetService("StarterGui")
-
---// Variables (regular)
-local LP = Players.LocalPlayer
-local Mouse = LP:GetMouse()
-local Camera = WS.CurrentCamera
-local GetGuiInset = GS.GetGuiInset
-
-local AimlockState = false
-local Locked
-local Victim
-
-local SelectedKey = getgenv().Key
-local SelectedDisableKey = getgenv().DisableKey
-
---// Notification function
-function Notify(tx)
-    SG:SetCore("SendNotification", {
-        Title = "Aimlock Status",
-        Text = tx,
-        Duration = 5
-    })
-end
-
---// Game detection notification
-if game.PlaceId == 2788229376 then
-    Notify("Player detected playing Da Hood, using Da Hood aiming system for lock")
-else
-    Notify("You're not playing Da Hood, using aim lock logic for other games")
-end
-
---// Check if aimlock is loaded
-if getgenv().Loaded == true then
-    Notify("Aimlock is already loaded!")
-    return
-end
-
-getgenv().Loaded = true
-
---// FOV Circle
-local fov = Drawing.new("Circle")
-fov.Filled = false
-fov.Transparency = 1
-fov.Thickness = 1
-fov.Color = Color3.fromRGB(255, 255, 0)
-fov.NumSides = 1000
-
---// Functions
-function update()
-    if getgenv().FOV == true then
-        if fov then
-            fov.Radius = getgenv().FOVSize * 2
-            fov.Visible = getgenv().ShowFOV
-            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
-
-            return fov
-        end
-    end
-end
-
-function WTVP(arg)
-    return Camera:WorldToViewportPoint(arg)
-end
-
-function WTSP(arg)
-    return Camera.WorldToScreenPoint(Camera, arg)
-end
-
-function getClosest()
-    local ClosestDistance = math.huge
-    local ClosestPlayer = nil
-    local LocalPlayer = game.Players.LocalPlayer
-    local CenterPosition = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
-
-    for _, Player in ipairs(game.Players:GetPlayers()) do
-        if Player ~= LocalPlayer then
-            local Character = Player.Character
-            if Character and Character:FindFirstChild("HumanoidRootPart") and Character:FindFirstChildOfClass("Humanoid").Health > 0 then
-                local Position, IsVisibleOnViewport = Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
-
-                if IsVisibleOnViewport then
-                    local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
-                    if Distance < ClosestDistance then
-                        ClosestPlayer = Character
-                        ClosestDistance = Distance
-                    end
-                end
-            end
-        end
-    end
-
-    return ClosestPlayer
-end
-
---// Loop update FOV and loop camera lock onto target
-if game.PlaceId == 2788229376 then
-    RS.RenderStepped:Connect(function()
-        update()
-        if AimlockState and Victim then
-            local aimPart = Victim:FindFirstChild(getgenv().AimPart)
-            if aimPart then
-                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Prediction)
-            else
-                Victim = nil
-                Notify("Lost target!")
-            end
-        end
-    end)
-else
-    RS.Heartbeat:Connect(function()
-        if AimlockState and Victim then
-            local aimPart = Victim:FindFirstChild(getgenv().AimPart)
-            if aimPart then
-                Camera.CFrame = CFrame.new(Camera.CFrame.p, aimPart.Position + aimPart.Velocity * getgenv().Pred)
-            else
-                Victim = nil
-                Notify("Lost target!")
-            end
-        end
-    end)
-end
-
 -- GUI Setup
 local Pluh = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
-local Logo = Instance.new("ImageLabel")
 local TextButton = Instance.new("TextButton")
 local UICorner_2 = Instance.new("UICorner")
 local PingDisplay = Instance.new("TextLabel")
+local PredictionDisplay = Instance.new("TextLabel")
+local ResolverButton = Instance.new("TextButton") -- New button
 
 -- Properties
 Pluh.Name = "Pluh"
@@ -139,7 +14,8 @@ Pluh.Parent = game.CoreGui
 Pluh.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = Pluh
-Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Updated color
+Frame.BackgroundTransparency = 0.30 -- 25% opacity (1.0 - 0.25)
 Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.133798108, 0, 0.20107238, 0)
@@ -156,30 +32,21 @@ Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(TopContainer)
 
 UICorner.Parent = Frame
 
-Logo.Name = "Logo"
-Logo.Parent = Frame
-Logo.BackgroundColor3 = Color3.fromRGB(100, 255, 100)
-Logo.BackgroundTransparency = 1.000
-Logo.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Logo.BorderSizePixel = 0
-Logo.Position = UDim2.new(0.326732665, 0, 0, 0)
-Logo.Size = UDim2.new(0, 70, 0, 70)
-Logo.Image = "rbxassetid://830610397"
-Logo.ImageTransparency = 0.300
-
 TextButton.Parent = Frame
-TextButton.BackgroundColor3 = Color3.fromRGB(75, 80, 255)
-TextButton.BackgroundTransparency = 1.000
-TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundColor3 = Color3.fromRGB(51, 50, 50)
 TextButton.BorderSizePixel = 0
-TextButton.Position = UDim2.new(0.0792079195, 0, 0.18571429, 0)
-TextButton.Size = UDim2.new(0, 170, 0, 44)
+TextButton.BackgroundTransparency = 0.40
+TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.Position = UDim2.new(0.03, 0, 0.18571429, 0)
+TextButton.Size = UDim2.new(0, 190, 0, 44)
 TextButton.Font = Enum.Font.SourceSansSemibold
 TextButton.Text = "Pluh Lock"
 TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextButton.TextScaled = true
 TextButton.TextSize = 18.000
 TextButton.TextWrapped = true
+
+UICorner_2.Parent = TextButton
 
 local state = false
 TextButton.MouseButton1Click:Connect(function()
@@ -229,70 +96,71 @@ end
 -- Start updating the Ping Display in a separate thread
 coroutine.wrap(updatePing)()
 
--- Update AutoPrediction based on ping
-coroutine.wrap(function()
-    while wait() do
-        if getgenv().AutoPrediction == true then
-            local pingValue = math.floor(game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue())
-            if pingValue > 280 then
-                getgenv().Prediction = 0.0500
-            elseif pingValue > 270 then
-                getgenv().Prediction = 0.0517
-            elseif pingValue > 260 then
-                getgenv().Prediction = 0.0534
-            elseif pingValue > 250 then
-                getgenv().Prediction = 0.0551
-            elseif pingValue > 240 then
-                getgenv().Prediction = 0.0568
-            elseif pingValue > 230 then
-                getgenv().Prediction = 0.0585
-            elseif pingValue > 220 then
-                getgenv().Prediction = 0.0603
-            elseif pingValue > 210 then
-                getgenv().Prediction = 0.0620
-            elseif pingValue > 200 then
-                getgenv().Prediction = 0.0638
-            elseif pingValue > 190 then
-                getgenv().Prediction = 0.0656
-            elseif pingValue > 180 then
-                getgenv().Prediction = 0.0674
-            elseif pingValue > 170 then
-                getgenv().Prediction = 0.163
-            elseif pingValue > 160 then
-                getgenv().Prediction = 0.1628
-            elseif pingValue > 150 then
-                getgenv().Prediction = 0.1625
-            elseif pingValue > 140 then
-                getgenv().Prediction = 0.16183
-            elseif pingValue > 130 then
-                getgenv().Prediction = 0.161
-            elseif pingValue > 120 then
-                getgenv().Prediction = 0.1609
-            elseif pingValue > 110 then
-                getgenv().Prediction = 0.1637
-            elseif pingValue > 100 then
-                getgenv().Prediction = 0.137
-            elseif pingValue > 90 then
-                getgenv().Prediction = 0.1611
-            elseif pingValue > 80 then
-                getgenv().Prediction = 0.15
-            elseif pingValue > 70 then
-                getgenv().Prediction = 0.144433333333392
-            elseif pingValue > 60 then
-                getgenv().Prediction = 0.1443
-            elseif pingValue > 50 then
-                getgenv().Prediction = 0.143321
-            elseif pingValue > 40 then
-                getgenv().Prediction = 0.13
-            elseif pingValue > 30 then
-                getgenv().Prediction = 0.11
-            elseif pingValue > 20 then
-                getgenv().Prediction = 0.10
-            elseif pingValue > 10 then
-                getgenv().Prediction = 0.0922
-            else
-                getgenv().Prediction = 0.1015
-            end
+-- Adding Prediction Display
+PredictionDisplay.Parent = Frame
+PredictionDisplay.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PredictionDisplay.BackgroundTransparency = 1.000
+PredictionDisplay.BorderColor3 = Color3.fromRGB(0, 0, 0)
+PredictionDisplay.BorderSizePixel = 0
+PredictionDisplay.Position = UDim2.new(0.0792079195, 0, -0.1, 0) -- Adjust the position as needed
+PredictionDisplay.Size = UDim2.new(0, 170, 0, 20)
+PredictionDisplay.Font = Enum.Font.GothamBold
+PredictionDisplay.Text = "Prediction: N/A"
+PredictionDisplay.TextScaled = true
+PredictionDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
+PredictionDisplay.TextSize = 14.000
+PredictionDisplay.TextWrapped = true
+
+-- Adding Resolver Button
+ResolverButton.Parent = Frame
+ResolverButton.BackgroundColor3 = Color3.fromRGB(26, 26, 26) -- Same color as frame
+ResolverButton.BackgroundTransparency = 0.30 -- Same opacity as frame
+ResolverButton.BorderSizePixel = 0
+ResolverButton.Position = UDim2.new(0.03, 0, 0.5, 0) -- Adjust position below the frame
+ResolverButton.Size = UDim2.new(0, 190, 0, 44)
+ResolverButton.Font = Enum.Font.SourceSansSemibold
+ResolverButton.Text = "Enable Resolver"
+ResolverButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+ResolverButton.TextScaled = true
+ResolverButton.TextSize = 10.000
+ResolverButton.TextWrapped = true
+
+UICorner_2:Clone().Parent = ResolverButton
+
+local resolverEnabled = false
+ResolverButton.MouseButton1Click:Connect(function()
+    if not resolverEnabled then
+        resolverEnabled = true
+        ResolverButton.Text = "Resolver Enabled!"
+        
+        -- Enable Resolver code
+        local RunService = game:GetService("RunService")
+
+        local function zeroOutYVelocity(hrp)
+            hrp.Velocity = Vector3.new(hrp.Velocity.X, 0, hrp.Velocity.Z)
+            hrp.AssemblyLinearVelocity = Vector3.new(hrp.Velocity.X, 0, hrp.Velocity.Z)
         end
+
+        local function onPlayerAdded(player)
+            player.CharacterAdded:Connect(function(character)
+                local hrp = character:WaitForChild("HumanoidRootPart")
+                zeroOutYVelocity(hrp)
+            end)
+        end
+
+        game.Players.PlayerAdded:Connect(onPlayerAdded)
+
+        RunService.Heartbeat:Connect(function()
+            pcall(function()
+                for _, player in pairs(game.Players:GetChildren()) do
+                    if player.Name ~= game.Players.LocalPlayer.Name then
+                        local hrp = player.Character.HumanoidRootPart
+                        zeroOutYVelocity(hrp)
+                    end
+                end
+            end)
+        end)
+
+        print("Resolver Enabled")
     end
-end)()
+end)
